@@ -1,0 +1,302 @@
+[
+  {
+    "ENG": "Accomplished",
+    "ITA": "esperto, abile",
+    "ENG__1": "Budding",
+    "ITA__1": "in erba"
+  },
+  {
+    "ENG": "Aggressive",
+    "ITA": "aggressivo, deciso",
+    "ENG__1": "Laid-back",
+    "ITA__1": "rilassato, spensierato"
+  },
+  {
+    "ENG": "Analytical",
+    "ITA": "analitico",
+    "ENG__1": "Emotional",
+    "ITA__1": "emotivo"
+  },
+  {
+    "ENG": "Artistic",
+    "ITA": "artistico",
+    "ENG__1": "Scientific",
+    "ITA__1": "scientifico"
+  },
+  {
+    "ENG": "Austere",
+    "ITA": "rigoroso, spartano",
+    "ENG__1": "Glamorous",
+    "ITA__1": "entusiasmante, di stile"
+  },
+  {
+    "ENG": "Best in Class",
+    "ITA": "migliore, superiore",
+    "ENG__1": "Ordinary",
+    "ITA__1": "ordinario, comune"
+  },
+  {
+    "ENG": "Big",
+    "ITA": "grande",
+    "ENG__1": "Small",
+    "ITA__1": "piccolo"
+  },
+  {
+    "ENG": "Bold",
+    "ITA": "sfrontato",
+    "ENG__1": "Quiet",
+    "ITA__1": "tranquillo, riservato"
+  },
+  {
+    "ENG": "Brash",
+    "ITA": "sfacciato",
+    "ENG__1": "Humble",
+    "ITA__1": "umile"
+  },
+  {
+    "ENG": "Calm",
+    "ITA": "tranquillo, calmo",
+    "ENG__1": "Energetic",
+    "ITA__1": "energetico, vivace"
+  },
+  {
+    "ENG": "Certain",
+    "ITA": "certo",
+    "ENG__1": "Curious",
+    "ITA__1": "curioso"
+  },
+  {
+    "ENG": "Conventional",
+    "ITA": "convenzionale",
+    "ENG__1": "Experimental",
+    "ITA__1": "sperimentale"
+  },
+  {
+    "ENG": "Daring",
+    "ITA": "coraggioso provocando",
+    "ENG__1": "Adventurous",
+    "ITA__1": "amante del rischio"
+  },
+  {
+    "ENG": "Dependable",
+    "ITA": "fidato, sicuro",
+    "ENG__1": "Surprising",
+    "ITA__1": "sorpendente, inaspettato"
+  },
+  {
+    "ENG": "Disciplined",
+    "ITA": "disciplinato, organizzato",
+    "ENG__1": "Relaxed",
+    "ITA__1": "disteso, rilassato"
+  },
+  {
+    "ENG": "Effortless",
+    "ITA": "semplice",
+    "ENG__1": "Rigorous",
+    "ITA__1": "impegnativo"
+  },
+  {
+    "ENG": "Everyday",
+    "ITA": "all'ordine del giorno",
+    "ENG__1": "Momentous",
+    "ITA__1": "importantissimo"
+  },
+  {
+    "ENG": "Exclusive",
+    "ITA": "esclusivo",
+    "ENG__1": "Approachable",
+    "ITA__1": "accessibile"
+  },
+  {
+    "ENG": "Focused",
+    "ITA": "mirato",
+    "ENG__1": "Multifaceted",
+    "ITA__1": "vario, poliedrico"
+  },
+  {
+    "ENG": "Formal",
+    "ITA": "formale, da cerimonia",
+    "ENG__1": "Casual",
+    "ITA__1": "informale"
+  },
+  {
+    "ENG": "Free",
+    "ITA": "libero",
+    "ENG__1": "Secure",
+    "ITA__1": "protetto, sicuro"
+  },
+  {
+    "ENG": "High-end",
+    "ITA": "di lusso, esclusivo",
+    "ENG__1": "Basic",
+    "ITA__1": "sobrio"
+  },
+  {
+    "ENG": "Industrial",
+    "ITA": "industriale",
+    "ENG__1": "Organic",
+    "ITA__1": "naturale, organico"
+  },
+  {
+    "ENG": "Mass-market",
+    "ITA": "di massa",
+    "ENG__1": "Niche",
+    "ITA__1": "di nicchia"
+  },
+  {
+    "ENG": "Mysterious",
+    "ITA": "enigmatico",
+    "ENG__1": "Relatable",
+    "ITA__1": "riconoscibile"
+  },
+  {
+    "ENG": "Nostalgic",
+    "ITA": "nostalgico",
+    "ENG__1": "Futuristic",
+    "ITA__1": "futuristico"
+  },
+  {
+    "ENG": "Opinionated",
+    "ITA": "supponente",
+    "ENG__1": "Open-Minded",
+    "ITA__1": "mentalità aperta"
+  },
+  {
+    "ENG": "Pessimistic",
+    "ITA": "pessimista",
+    "ENG__1": "Optimistic",
+    "ITA__1": "ottimista"
+  },
+  {
+    "ENG": "Practical",
+    "ITA": "concreto",
+    "ENG__1": "Imaginative",
+    "ITA__1": "fantasioso"
+  },
+  {
+    "ENG": "Professional",
+    "ITA": "professionale",
+    "ENG__1": "Playful",
+    "ITA__1": "giocoso"
+  },
+  {
+    "ENG": "Rational",
+    "ITA": "ragionevole, logico",
+    "ENG__1": "Radical",
+    "ITA__1": "drastico, estremista"
+  },
+  {
+    "ENG": "Realistic",
+    "ITA": "realista",
+    "ENG__1": "Idealistic",
+    "ITA__1": "idealista"
+  },
+  {
+    "ENG": "Refined",
+    "ITA": "sofisticato, fine",
+    "ENG__1": "Raw",
+    "ITA__1": "crudo"
+  },
+  {
+    "ENG": "Reserved",
+    "ITA": "riservato, chiuso",
+    "ENG__1": "Welcoming",
+    "ITA__1": "accogliente, caloroso"
+  },
+  {
+    "ENG": "Respectful",
+    "ITA": "rispettoso",
+    "ENG__1": "Cheeky",
+    "ITA__1": "provocante"
+  },
+  {
+    "ENG": "Rugged",
+    "ITA": "aspro, vigoroso",
+    "ENG__1": "Graceful",
+    "ITA__1": "elegante, garbato"
+  },
+  {
+    "ENG": "Scholarly",
+    "ITA": "colto",
+    "ENG__1": "Savvy",
+    "ITA__1": "furbo, scaltro"
+  },
+  {
+    "ENG": "Serious",
+    "ITA": "serio, severo",
+    "ENG__1": "Fun",
+    "ITA__1": "divertente, spassoso"
+  },
+  {
+    "ENG": "Simple",
+    "ITA": "semplice",
+    "ENG__1": "Complex",
+    "ITA__1": "complesso"
+  },
+  {
+    "ENG": "Sincere",
+    "ITA": "sincero, onesto",
+    "ENG__1": "Clever",
+    "ITA__1": "perspicace, arguto"
+  },
+  {
+    "ENG": "Sophisticated",
+    "ITA": "ricercato, fine",
+    "ENG__1": "Wide-eyed",
+    "ITA__1": "ad occhi spalancati, ingenuo"
+  },
+  {
+    "ENG": "Standardized",
+    "ITA": "standardizzato",
+    "ENG__1": "Crafted",
+    "ITA__1": "fatto a mano"
+  },
+  {
+    "ENG": "Steady",
+    "ITA": "saldo, stabile",
+    "ENG__1": "Dynamic",
+    "ITA__1": "dinamico, in movimento"
+  },
+  {
+    "ENG": "Subtle",
+    "ITA": "discreto, sottile",
+    "ENG__1": "Vibrant",
+    "ITA__1": "vivace, acceso"
+  },
+  {
+    "ENG": "Technical",
+    "ITA": "tecnico",
+    "ENG__1": "Intuitive",
+    "ITA__1": "intuitivo"
+  },
+  {
+    "ENG": "Timeless",
+    "ITA": "senza tempo, eterno",
+    "ENG__1": "Current",
+    "ITA__1": "attuale"
+  },
+  {
+    "ENG": "Traditional",
+    "ITA": "tradizionale",
+    "ENG__1": "Progressive",
+    "ITA__1": "progressista"
+  },
+  {
+    "ENG": "Trusted",
+    "ITA": "di fiducia",
+    "ENG__1": "Cutting-Edge",
+    "ITA__1": "innovativo"
+  },
+  {
+    "ENG": "Vintage",
+    "ITA": "vintage, antico",
+    "ENG__1": "Modern",
+    "ITA__1": "moderno"
+  },
+  {
+    "ENG": "Wise",
+    "ITA": "saggio",
+    "ENG__1": "Geeky",
+    "ITA__1": "smanettone, fissato tech"
+  }
+]
