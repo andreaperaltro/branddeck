@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useDraggable, useDroppable } from '@dnd-kit/core';
-import { Card as CardType, Pile } from '@/lib/types';
+import React from 'react';
+import { useDraggable } from '@dnd-kit/core';
+import { Card as CardType } from '@/lib/types';
 import { useDeckStore } from '@/store/useDeckStore';
 
 interface CardPairProps {
@@ -10,7 +10,7 @@ interface CardPairProps {
 }
 
 export const CardPair: React.FC<CardPairProps> = ({ cards }) => {
-  const { language, moveCardAndShowNext } = useDeckStore();
+  const { language } = useDeckStore();
 
   if (cards.length === 0) {
     return (
@@ -18,7 +18,7 @@ export const CardPair: React.FC<CardPairProps> = ({ cards }) => {
         <div className="text-center">
           <div className="text-6xl mb-4">🎉</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">All Done!</h2>
-          <p className="text-gray-600">You've sorted all the word pairs.</p>
+          <p className="text-gray-600">You&apos;ve sorted all the word pairs.</p>
         </div>
       </div>
     );
@@ -34,9 +34,9 @@ export const CardPair: React.FC<CardPairProps> = ({ cards }) => {
 
       {/* Cards */}
       <div className="flex flex-col lg:flex-row gap-8 items-center justify-center mb-8">
-        {cards.map((card, index) => {
+        {cards.map((card) => {
           const displayText = language === 'en' ? card.text_en : card.text_it;
-          const isOpposite = card.isOpposite;
+          const isOpposite = card.isOpposite ?? false;
           
           return (
             <DraggableCard

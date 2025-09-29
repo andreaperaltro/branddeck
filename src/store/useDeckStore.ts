@@ -21,10 +21,10 @@ interface DeckStore extends AppState {
   getDefaultCards: () => Promise<Card[]>;
   importCSV: (csvContent: string) => void;
   saveToHistory: () => void;
-  getFilteredCards: (pile?: Pile) => Card[];
   getCardsInPile: (pile: Pile) => Card[];
   getCurrentPair: () => Card[];
   moveCardAndShowNext: (cardId: string, newPile: Pile) => void;
+  bringCardBackToCenter: (cardId: string) => void;
 }
 
 export const useDeckStore = create<DeckStore>((set, get) => ({
@@ -112,7 +112,7 @@ export const useDeckStore = create<DeckStore>((set, get) => ({
       }
       
       console.log('📝 [STORE] Current session has', session.cards.length, 'cards');
-      console.log('📝 [STORE] First 3 incoming cards:', cards.slice(0, 3).map(c => ({ id: c.id, text: c.text_en, pairId: c.pairId, isOpposite: c.isOpposite })));
+      console.log('📝 [STORE] First 3 incoming cards:', cards.slice(0, 3).map(c => ({ text: c.text_en, pairId: c.pairId, isOpposite: c.isOpposite })));
       
       const newCards: Card[] = cards.map((card, index) => ({
         ...card,

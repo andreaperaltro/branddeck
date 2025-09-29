@@ -145,9 +145,9 @@ export const Card: React.FC<CardProps> = ({ card, pile, isDragDisabled = false }
             <span className={`px-1 py-0.5 rounded ${
               card.isOpposite ? 'bg-gray-700' : 'bg-gray-100'
             }`}>3: Indecisive</span>
-            <span className={`px-1 py-0.5 rounded ${
-              card.isOpposite ? 'bg-gray-700' : 'bg-gray-100'
-            }`}>4: Doesn't Apply</span>
+              <span className={`px-1 py-0.5 rounded ${
+                card.isOpposite ? 'bg-gray-700' : 'bg-gray-100'
+              }`}>4: Doesn&apos;t Apply</span>
             <span className={`px-1 py-0.5 rounded ${
               card.isOpposite ? 'bg-gray-700' : 'bg-gray-100'
             }`}>0: Unsorted</span>

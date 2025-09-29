@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { nanoid } from 'nanoid';
 
 interface CardPair {
@@ -21,8 +22,8 @@ export default function AdminPage() {
     const loadPairs = async () => {
       try {
         const response = await fetch('/BrandDeck.json');
-        const data = await response.json();
-        const pairsWithIds = data.map((pair: any) => ({
+        const data = await response.json() as Omit<CardPair, 'id'>[];
+        const pairsWithIds = data.map((pair) => ({
           id: nanoid(),
           ...pair
         }));
@@ -66,7 +67,7 @@ export default function AdminPage() {
     setIsSaving(true);
     try {
       // Remove IDs before saving
-      const dataToSave = pairs.map(({ id, ...pair }) => pair);
+      const dataToSave = pairs.map(({ id: _id, ...pair }) => pair);
       
       // Create a downloadable JSON file
       const dataStr = JSON.stringify(dataToSave, null, 2);
@@ -126,12 +127,12 @@ export default function AdminPage() {
               >
                 {isSaving ? '💾 Saving...' : '💾 Save JSON'}
               </button>
-              <a
+              <Link
                 href="/"
                 className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
               >
                 ← Back to App
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,9 +1,9 @@
 import Papa from 'papaparse';
 import { nanoid } from 'nanoid';
-import { Card, Pile, CSVRow } from './types';
+import { Card, Pile } from './types';
 
 export const parseCSV = (csvContent: string): Card[] => {
-  const result = Papa.parse<any>(csvContent, {
+  const result = Papa.parse<string[]>(csvContent, {
     header: false, // Don't use header, we'll handle columns manually
     skipEmptyLines: true,
   });
@@ -130,7 +130,7 @@ export const downloadCSV = (csvContent: string, filename: string = 'branddeck-ex
   }
 };
 
-export const downloadJSON = (data: any, filename: string = 'branddeck-export.json'): void => {
+export const downloadJSON = (data: unknown, filename: string = 'branddeck-export.json'): void => {
   const jsonString = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
   const link = document.createElement('a');

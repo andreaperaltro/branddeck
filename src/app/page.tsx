@@ -1,14 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, closestCenter } from '@dnd-kit/core';
+import React, { useState, useEffect, useCallback } from 'react';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCenter } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useDeckStore } from '@/store/useDeckStore';
 import { Card as CardType, Pile } from '@/lib/types';
 import { Toolbar } from '@/components/Toolbar';
 import { Column } from '@/components/Column';
-import { UnsortedTray } from '@/components/UnsortedTray';
-import { Card } from '@/components/Card';
 import { CardPair } from '@/components/CardPair';
 import { ImportExportDialog } from '@/components/ImportExportDialog';
 import { loadSessionFromURL } from '@/lib/urlshare';
@@ -29,8 +27,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Initialize session on mount
-  useEffect(() => {
-    const initializeSession = async () => {
+  const initializeSession = useCallback(async () => {
       console.log('🎯 [PAGE] initializeSession called');
       
       // Check for URL-shared session first
@@ -71,10 +68,11 @@ export default function HomePage() {
       
       setIsLoading(false);
       console.log('🎯 [PAGE] Initialization complete');
-    };
+    }, [createSession, loadSession]);
 
+  useEffect(() => {
     initializeSession();
-  }, []); // Empty dependency array - run only once on mount
+  }, [initializeSession]);
 
   // Keyboard shortcuts for undo/redo
   useEffect(() => {
@@ -140,7 +138,7 @@ export default function HomePage() {
     }
   };
 
-  const handleDragOver = (event: DragOverEvent) => {
+  const handleDragOver = () => {
     // This is handled by the droppable areas
   };
 
@@ -178,14 +176,12 @@ export default function HomePage() {
   }
 
   // Get cards for each pile
-  const unsortedCards = getCardsInPile('UNSORTED');
   const youAreCards = getCardsInPile('YOU_ARE');
   const youAreNotCards = getCardsInPile('YOU_ARE_NOT');
   const indecisiveCards = getCardsInPile('INDECISIVE');
   const doesNotApplyCards = getCardsInPile('DOES_NOT_APPLY');
 
   // Use cards directly without filtering
-  const filteredUnsortedCards = unsortedCards;
   const filteredYouAreCards = youAreCards;
   const filteredYouAreNotCards = youAreNotCards;
   const filteredIndecisiveCards = indecisiveCards;
@@ -217,30 +213,6 @@ export default function HomePage() {
             <Column pile="DOES_NOT_APPLY" cards={filteredDoesNotApplyCards} />
           </div>
 
-          {/* Empty State */}
-          {session.cards.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🎯</div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">No Cards Yet</h2>
-              <p className="text-gray-600 mb-6">
-                Start by importing a CSV file or adding cards manually
-              </p>
-              <div className="flex justify-center gap-4">
-                <button
-                  onClick={() => setIsImportExportOpen(true)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Import CSV
-                </button>
-                <button
-                  onClick={() => setIsAddCardsOpen(true)}
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                >
-                  Add Cards
-                </button>
-              </div>
-            </div>
-          )}
         </div>
 
         <DragOverlay>

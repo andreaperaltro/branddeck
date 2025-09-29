@@ -23,7 +23,7 @@ export const createDefaultCards = async (): Promise<Card[]> => {
     const cards: Card[] = [];
     let cardIndex = 0;
 
-    data.forEach((item: any, index: number) => {
+      data.forEach((item: Record<string, string>, index: number) => {
       const pairId = nanoid();
       console.log(`🚀 [DATA] Processing item ${index}:`, { ENG: item.ENG, ENG__1: item.ENG__1, pairId });
       

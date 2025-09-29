@@ -21,8 +21,6 @@ export interface Session {
 export interface AppState {
   session: Session | null;
   language: 'en' | 'it';
-  searchQuery: string;
-  filterPile: Pile | 'ALL';
   undoStack: Session[];
   redoStack: Session[];
 }
@@ -42,7 +40,8 @@ export const PILE_LABELS: Record<Pile, string> = {
   YOU_ARE: 'You Are',
   YOU_ARE_NOT: 'You Are Not',
   INDECISIVE: 'Indecisive',
-  DOES_NOT_APPLY: 'Doesn\'t Apply'
+  DOES_NOT_APPLY: 'Doesn\'t Apply',
+  HIDDEN: 'Hidden'
 };
 
 export const PILE_COLORS: Record<Pile, string> = {
@@ -50,7 +49,8 @@ export const PILE_COLORS: Record<Pile, string> = {
   YOU_ARE: 'bg-green-100 border-green-300',
   YOU_ARE_NOT: 'bg-red-100 border-red-300',
   INDECISIVE: 'bg-yellow-100 border-yellow-300',
-  DOES_NOT_APPLY: 'bg-blue-100 border-blue-300'
+  DOES_NOT_APPLY: 'bg-blue-100 border-blue-300',
+  HIDDEN: 'bg-gray-50 border-gray-200'
 };
 
 export const PILE_HEADER_COLORS: Record<Pile, string> = {
@@ -58,5 +58,6 @@ export const PILE_HEADER_COLORS: Record<Pile, string> = {
   YOU_ARE: 'bg-green-200 text-green-800',
   YOU_ARE_NOT: 'bg-red-200 text-red-800',
   INDECISIVE: 'bg-yellow-200 text-yellow-800',
-  DOES_NOT_APPLY: 'bg-blue-200 text-blue-800'
+  DOES_NOT_APPLY: 'bg-blue-200 text-blue-800',
+  HIDDEN: 'bg-gray-100 text-gray-600'
 };
