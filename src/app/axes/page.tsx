@@ -63,30 +63,38 @@ export default function AxesPage() {
 
         <div className="mb-4 flex items-center gap-2">
           <button
+            type="button"
             className="px-3 py-2 border rounded"
             onClick={async () => {
-              // lazy import to keep initial bundle smaller
-              const { default: html2canvas } = await import('html2canvas');
-              const jsPDFModule = await import('jspdf');
-              const JsPDFCtor = (jsPDFModule as { jsPDF: typeof jsPDF } | { default: typeof jsPDF });
-              const Ctor = 'jsPDF' in JsPDFCtor ? JsPDFCtor.jsPDF : JsPDFCtor.default;
-              const pdf = new Ctor({ unit: 'pt', format: 'a4' });
-              const pageWidth = pdf.internal.pageSize.getWidth();
-              const pageHeight = pdf.internal.pageSize.getHeight();
+              try {
+                const { default: html2canvas } = await import('html2canvas');
+                const jsPDFModule = await import('jspdf');
+                const JsPDFCtor = (jsPDFModule as { jsPDF: typeof jsPDF } | { default: typeof jsPDF });
+                const Ctor = 'jsPDF' in JsPDFCtor ? JsPDFCtor.jsPDF : JsPDFCtor.default;
+                const pdf = new Ctor({ unit: 'pt', format: 'a4' });
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
 
-              for (let i = 0; i < boards.length; i++) {
-                const board = boards[i];
-                const el = boardRefs.current[board.id];
-                if (!el) continue;
-                const canvas = await html2canvas(el, { backgroundColor: '#ffffff', scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = pageWidth - 40;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                if (i > 0) pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, Math.min(imgHeight, pageHeight - 40));
+                let pages = 0;
+                for (let i = 0; i < boards.length; i++) {
+                  const board = boards[i];
+                  const el = boardRefs.current[board.id];
+                  if (!el) continue;
+                  const canvas = await html2canvas(el, { backgroundColor: '#ffffff', scale: 2 });
+                  const imgData = canvas.toDataURL('image/png');
+                  const imgWidth = pageWidth - 40;
+                  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                  if (pages > 0) pdf.addPage();
+                  pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, Math.min(imgHeight, pageHeight - 40));
+                  pages++;
+                }
+                // Always save a file even if no boards captured
+                const name = (session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
+                pdf.save(`${name}_axes.pdf`);
+              } catch (err) {
+                console.error('Failed to export Axes PDF', err);
+                alert('Failed to export PDF. Please try again.');
               }
-              const name = (session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
-              pdf.save(`${name}_axes.pdf`);
             }}
           >
             Export PDF
