@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import type { jsPDF } from 'jspdf';
 import { useDeckStore } from '@/store/useDeckStore';
 import { Toolbar } from '@/components/Toolbar';
 
@@ -75,8 +76,9 @@ export default function AxesPage() {
                 try { return await import('jspdf/dist/jspdf.umd.min.js'); } catch { /* fallthrough */ }
                 throw new Error('jspdf not available');
               })();
-              const JsPDFCtor = (jsPDFModule as any).jsPDF || (jsPDFModule as any).default;
-              const pdf = new JsPDFCtor({ unit: 'pt', format: 'a4' });
+              const JsPDFCtor = (jsPDFModule as { jsPDF: typeof jsPDF } | { default: typeof jsPDF });
+              const Ctor = 'jsPDF' in JsPDFCtor ? JsPDFCtor.jsPDF : JsPDFCtor.default;
+              const pdf = new Ctor({ unit: 'pt', format: 'a4' });
               const pageWidth = pdf.internal.pageSize.getWidth();
               const pageHeight = pdf.internal.pageSize.getHeight();
 

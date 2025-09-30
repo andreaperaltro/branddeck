@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { exportSession, importSession } from '@/lib/storage';
 
 export default function DashboardPage() {
-  const { session, createSession, setActiveAxisBoard, createAxisBoard, loadSession } = useDeckStore();
+  const { session, createSession, createAxisBoard, loadSession } = useDeckStore();
   const [clientName, setClientName] = useState('');
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);

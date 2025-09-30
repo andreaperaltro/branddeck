@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import type { jsPDF } from 'jspdf';
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCenter } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useDeckStore } from '@/store/useDeckStore';
@@ -176,8 +177,9 @@ export default function DeckPage() {
                   try { return await import('jspdf/dist/jspdf.umd.min.js'); } catch { /* fallthrough */ }
                   throw new Error('jspdf not available');
                 })();
-                const JsPDFCtor = (jsPDFModule as any).jsPDF || (jsPDFModule as any).default;
-                const pdf = new JsPDFCtor({ unit: 'pt', format: 'a4' });
+                const JsPDFCtor = (jsPDFModule as { jsPDF: typeof jsPDF } | { default: typeof jsPDF });
+                const Ctor = 'jsPDF' in JsPDFCtor ? JsPDFCtor.jsPDF : JsPDFCtor.default;
+                const pdf = new Ctor({ unit: 'pt', format: 'a4' });
                 const el = resultsRef.current;
                 if (!el) return;
                 const canvas = await html2canvas(el, { backgroundColor: '#ffffff', scale: 2 });
