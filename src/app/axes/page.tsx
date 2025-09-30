@@ -67,8 +67,9 @@ export default function AxesPage() {
             onClick={async () => {
               try {
                 const { default: html2canvas } = await import('html2canvas');
-                const { jsPDF } = await import('jspdf');
-                const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+                const jsPDFLib = await import('jspdf');
+                const PdfCtor = (jsPDFLib as any).jsPDF || (jsPDFLib as any).default;
+                const pdf = new PdfCtor({ unit: 'pt', format: 'a4' });
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
 
