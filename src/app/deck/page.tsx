@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import type { jsPDF as JsPDFClass } from 'jspdf';
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCenter } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useDeckStore } from '@/store/useDeckStore';
@@ -168,32 +167,7 @@ export default function DeckPage() {
               className="px-3 py-2 border rounded"
               onClick={async () => {
                 try {
-                  const { default: html2canvas } = await import('html2canvas');
-                  const jsPDFLib = await import('jspdf');
-                  const PdfCtor = (jsPDFLib as { jsPDF: JsPDFClass }).jsPDF ?? (jsPDFLib as { default: JsPDFClass }).default;
-                  const pdf = new PdfCtor({ unit: 'pt', format: 'a4' });
-                  const el = resultsRef.current;
-                  if (!el) return;
-                  const canvas = await html2canvas(el, { backgroundColor: '#ffffff', scale: 2 });
-                  const imgData = canvas.toDataURL('image/png');
-                  const pageWidth = pdf.internal.pageSize.getWidth();
-                  const pageHeight = pdf.internal.pageSize.getHeight();
-                  const imgWidth = pageWidth - 40;
-                  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                  pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, Math.min(imgHeight, pageHeight - 40));
                   const name = (useDeckStore.getState().session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
-                  // Robust save: use blob URL to avoid popup blockers
-                  const blob = pdf.output('blob');
-                  const url = URL.createObjectURL(blob);
-                  const link = document.createElement('a');
-                  link.href = url;
-                  link.download = `${name}_deck_results.pdf`;
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                  setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-                  // Also export CSV of the results
                   const rows: string[] = [];
                   const esc = (s: string) => `"${s.replace(/"/g, '""')}"`;
                   rows.push(['Pile','EN','IT'].join(','));
@@ -214,12 +188,12 @@ export default function DeckPage() {
                   document.body.removeChild(a);
                   setTimeout(() => URL.revokeObjectURL(csvUrl), 1000);
                 } catch (err) {
-                  console.error('Export failed', err);
-                  alert('Export failed. Please try again.');
+                  console.error('CSV export failed', err);
+                  alert('CSV export failed. Please try again.');
                 }
               }}
             >
-              Export PDF
+              Export CSV
             </button>
           </div>
           <div className="mb-8">

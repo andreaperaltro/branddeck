@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import type { jsPDF as JsPDFClass } from 'jspdf';
 import { useDeckStore } from '@/store/useDeckStore';
 import { Toolbar } from '@/components/Toolbar';
 
@@ -68,43 +67,28 @@ export default function AxesPage() {
             onClick={async () => {
               try {
                 const { default: html2canvas } = await import('html2canvas');
-                const jsPDFLib = await import('jspdf');
-                const PdfCtor = (jsPDFLib as { jsPDF: JsPDFClass }).jsPDF ?? (jsPDFLib as { default: JsPDFClass }).default;
-                const pdf = new PdfCtor({ unit: 'pt', format: 'a4' });
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-
-                let pages = 0;
+                const nameBase = (session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
                 for (let i = 0; i < boards.length; i++) {
                   const board = boards[i];
                   const el = boardRefs.current[board.id];
                   if (!el) continue;
                   const canvas = await html2canvas(el, { backgroundColor: '#ffffff', scale: 2 });
-                  const imgData = canvas.toDataURL('image/png');
-                  const imgWidth = pageWidth - 40;
-                  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                  if (pages > 0) pdf.addPage();
-                  pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, Math.min(imgHeight, pageHeight - 40));
-                  pages++;
+                  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+                  const link = document.createElement('a');
+                  link.href = dataUrl;
+                  const mapName = board.name?.trim() ? board.name.trim().replace(/[^a-z0-9-_]+/gi, '_') : `Map_${i + 1}`;
+                  link.download = `${nameBase}_${mapName}.jpg`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
                 }
-                // Always save a file even if no boards captured
-                const name = (session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
-                const blob = pdf.output('blob');
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `${name}_axes.pdf`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
               } catch (err) {
-                console.error('Failed to export Axes PDF', err);
-                alert('Failed to export PDF. Please try again.');
+                console.error('Failed to export Axes JPGs', err);
+                alert('Failed to export JPGs. Please try again.');
               }
             }}
           >
-            Export PDF
+            Export JPGs
           </button>
           <button
             className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700"
