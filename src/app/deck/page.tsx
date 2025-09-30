@@ -168,11 +168,7 @@ export default function DeckPage() {
               className="px-3 py-2 border rounded"
               onClick={async () => {
                 const { default: html2canvas } = await import('html2canvas');
-                const jsPDFModule = await (async () => {
-                  try { return await import('jspdf'); } catch { /* fallthrough */ }
-                  try { return await import('jspdf/dist/jspdf.umd.min.js'); } catch { /* fallthrough */ }
-                  throw new Error('jspdf not available');
-                })();
+                const jsPDFModule = await import('jspdf');
                 const JsPDFCtor = (jsPDFModule as { jsPDF: typeof jsPDF } | { default: typeof jsPDF });
                 const Ctor = 'jsPDF' in JsPDFCtor ? JsPDFCtor.jsPDF : JsPDFCtor.default;
                 const pdf = new Ctor({ unit: 'pt', format: 'a4' });
