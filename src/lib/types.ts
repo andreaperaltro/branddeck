@@ -16,6 +16,7 @@ export interface Session {
   cards: Card[];
   createdAt: Date;
   updatedAt: Date;
+  axesBoards?: AxisBoard[];
 }
 
 export interface AppState {
@@ -23,6 +24,7 @@ export interface AppState {
   language: 'en' | 'it';
   undoStack: Session[];
   redoStack: Session[];
+  activeAxisBoardId?: string | null;
 }
 
 export interface ImportExportData {
@@ -61,3 +63,28 @@ export const PILE_HEADER_COLORS: Record<Pile, string> = {
   DOES_NOT_APPLY: 'bg-blue-200 text-blue-800',
   HIDDEN: 'bg-gray-100 text-gray-600'
 };
+
+// Axis Tool Types
+export interface AxisLabels {
+  top: string;
+  bottom: string;
+  left: string;
+  right: string;
+}
+
+export interface AxisItem {
+  id: string;
+  label: string;
+  // position as percentage within the board (0-100)
+  x: number;
+  y: number;
+}
+
+export interface AxisBoard {
+  id: string;
+  name: string;
+  labels: AxisLabels;
+  items: AxisItem[];
+  createdAt: Date;
+  updatedAt: Date;
+}

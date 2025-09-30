@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   turbopack: {
+    // Ensure Turbopack resolves modules from this project root
+    root: __dirname,
     rules: {
       '*.svg': {
         loaders: ['@svgr/webpack'],

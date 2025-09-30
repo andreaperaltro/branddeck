@@ -1,4 +1,4 @@
-import { Session, AppState } from './types';
+import { Session, AppState, AxisBoard } from './types';
 
 const STORAGE_KEYS = {
   SESSION: 'branddeck_session',
@@ -22,6 +22,13 @@ export const loadSession = (): Session | null => {
     // Convert date strings back to Date objects
     session.createdAt = new Date(session.createdAt);
     session.updatedAt = new Date(session.updatedAt);
+    if (session.axesBoards && Array.isArray(session.axesBoards)) {
+      session.axesBoards = (session.axesBoards as any[]).map((b) => ({
+        ...b,
+        createdAt: new Date(b.createdAt),
+        updatedAt: new Date(b.updatedAt),
+      })) as AxisBoard[];
+    }
     
     return session;
   } catch (error) {
@@ -76,6 +83,13 @@ export const importSession = (jsonString: string): Session | null => {
     // Convert date strings back to Date objects
     session.createdAt = new Date(session.createdAt);
     session.updatedAt = new Date(session.updatedAt);
+    if (session.axesBoards && Array.isArray(session.axesBoards)) {
+      session.axesBoards = session.axesBoards.map((b: any) => ({
+        ...b,
+        createdAt: new Date(b.createdAt),
+        updatedAt: new Date(b.updatedAt),
+      }));
+    }
     
     return session;
   } catch (error) {

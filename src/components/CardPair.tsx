@@ -34,7 +34,7 @@ export const CardPair: React.FC<CardPairProps> = ({ cards }) => {
 
       {/* Cards */}
       <div className="flex flex-col lg:flex-row gap-8 items-center justify-center mb-8">
-        {cards.map((card) => {
+        {cards.map((card, index) => {
           const displayText = language === 'en' ? card.text_en : card.text_it;
           const isOpposite = card.isOpposite ?? false;
           
@@ -44,6 +44,7 @@ export const CardPair: React.FC<CardPairProps> = ({ cards }) => {
               card={card}
               displayText={displayText}
               isOpposite={isOpposite}
+              index={index}
             />
           );
         })}
@@ -61,12 +62,14 @@ interface DraggableCardProps {
   card: CardType;
   displayText: string;
   isOpposite: boolean;
+  index: number;
 }
 
 const DraggableCard: React.FC<DraggableCardProps> = ({
   card,
   displayText,
-  isOpposite
+  isOpposite,
+  index
 }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: card.id,
@@ -83,14 +86,12 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
       {...listeners}
       {...attributes}
       className={`
-        w-80 h-48 rounded-2xl border-4 cursor-grab active:cursor-grabbing
-        transition-all duration-300 hover:scale-105 hover:shadow-2xl
+        w-80 h-48 rounded-2xl cursor-grab active:cursor-grabbing
+        transition-all duration-300 ease-out shadow-md hover:shadow-2xl
         flex items-center justify-center text-center
-        ${isDragging ? 'opacity-50 scale-105 shadow-2xl' : ''}
-        ${isOpposite 
-          ? 'bg-black text-white border-gray-800 hover:bg-gray-900' 
-          : 'bg-white text-black border-gray-300 hover:bg-gray-50'
-        }
+        ${isDragging ? 'opacity-50 -translate-y-1 shadow-2xl' : ''}
+        ${index === 0 ? 'hover:-translate-y-2 hover:-rotate-2' : 'hover:-translate-y-2 hover:rotate-2'}
+        ${isOpposite ? 'bg-black text-white' : 'bg-white text-black'}
       `}
       role="button"
       tabIndex={0}

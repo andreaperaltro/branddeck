@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useDeckStore } from '@/store/useDeckStore';
 
 interface ToolbarProps {
@@ -60,7 +61,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onImportExport }) => {
                 onClick={() => setIsEditingName(true)}
                 className="text-2xl font-bold hover:bg-gray-100 px-2 py-1 rounded transition-colors"
               >
-                {session?.name || 'Brand Deck'}
+                {session?.name || 'New Session'}
               </button>
             )}
             
@@ -75,83 +76,13 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onImportExport }) => {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-              className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm"
-            >
-              ⚙️ Settings
-            </button>
+            <Link href="/" className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm">Dashboard</Link>
+            <Link href="/deck" className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm">Deck</Link>
+            <Link href="/axes" className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm">Axes</Link>
           </div>
         </div>
 
-        {/* Collapsible Settings Panel */}
-        {isSettingsOpen && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg border">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Undo/Redo */}
-              <div className="flex gap-2">
-                <button
-                  onClick={undo}
-                  disabled={undoStack.length === 0}
-                  className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
-                >
-                  ↶ Undo
-                </button>
-                <button
-                  onClick={redo}
-                  disabled={redoStack.length === 0}
-                  className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
-                >
-                  ↷ Redo
-                </button>
-              </div>
-
-              {/* Import/Export */}
-              <div>
-                <button
-                  onClick={onImportExport}
-                  className="w-full px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors text-sm"
-                >
-                  📁 Import/Export
-                </button>
-              </div>
-
-              {/* Admin */}
-              <div>
-                <a
-                  href="/admin"
-                  className="w-full px-3 py-1 bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200 transition-colors text-sm inline-block text-center"
-                >
-                  ⚙️ Admin
-                </a>
-              </div>
-
-              {/* Reset */}
-              <div>
-                <button
-                  onClick={async () => {
-                    if (confirm('Are you sure you want to reset and reload all cards?')) {
-                      resetSession();
-                      // Force reload with fresh JSON data
-                      const defaultCards = await useDeckStore.getState().getDefaultCards();
-                      useDeckStore.getState().addCards(defaultCards);
-                    }
-                  }}
-                  className="w-full px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors text-sm"
-                >
-                  🔄 Reset & Reload
-                </button>
-              </div>
-            </div>
-
-            {/* Keyboard Shortcuts Help */}
-            <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
-              <strong>Keyboard Shortcuts:</strong> Focus a card and press 1-4 to move to piles, 0 for unsorted, Del to remove. 
-              <span className="ml-4">⌘/Ctrl+Z: Undo</span>
-              <span className="ml-2">⌘/Ctrl+Shift+Z: Redo</span>
-            </div>
-          </div>
-        )}
+        {/* Collapsible panel removed – Settings moved to dedicated page */}
       </div>
     </div>
   );

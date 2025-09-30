@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { nanoid } from 'nanoid';
-import { Card, Pile, Session, AppState } from '@/lib/types';
+import { Card, Pile, Session, AppState, AxisBoard, AxisItem, AxisLabels } from '@/lib/types';
 import { saveSession, loadSession, saveAppState, loadAppState } from '@/lib/storage';
 import { parseCSV } from '@/lib/csv';
 import { createDefaultCards } from '@/lib/data';
@@ -10,6 +10,20 @@ interface DeckStore extends AppState {
   createSession: (name: string) => void;
   loadSession: (session: Session) => void;
   updateSessionName: (name: string) => void;
+  // Axis boards
+  createAxisBoard: (name?: string, labels?: Partial<AxisLabels>) => void;
+  setActiveAxisBoard: (boardId: string | null) => void;
+  updateAxisLabels: (boardId: string, labels: Partial<AxisLabels>) => void;
+  updateAxisBoardName: (boardId: string, name: string) => void;
+  deleteAxisBoard: (boardId: string) => void;
+  addAxisItem: (boardId: string, label: string, x: number, y: number) => void;
+  moveAxisItem: (boardId: string, itemId: string, x: number, y: number) => void;
+  updateAxisItemLabel: (boardId: string, itemId: string, label: string) => void;
+  deleteAxisItem: (boardId: string, itemId: string) => void;
+  // Shared word actions across all boards
+  addAxisWordAllBoards: (label: string) => void;
+  updateAxisWordLabelAllBoards: (itemId: string, label: string) => void;
+  deleteAxisWordAllBoards: (itemId: string) => void;
   addCard: (text_en: string, text_it: string) => void;
   addCards: (cards: Omit<Card, 'id' | 'pile' | 'order'>[]) => void;
   moveCard: (cardId: string, newPile: Pile, newOrder?: number) => void;
@@ -33,6 +47,7 @@ export const useDeckStore = create<DeckStore>((set, get) => ({
   language: 'en',
   undoStack: [],
   redoStack: [],
+  activeAxisBoardId: null,
 
   // Actions
   createSession: (name: string) => {
@@ -40,6 +55,7 @@ export const useDeckStore = create<DeckStore>((set, get) => ({
       id: nanoid(),
       name,
       cards: [],
+      axesBoards: [],
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -51,18 +67,19 @@ export const useDeckStore = create<DeckStore>((set, get) => ({
     });
     
     saveSession(newSession);
-    saveAppState({ language: get().language });
+    saveAppState({ language: get().language, activeAxisBoardId: null });
   },
 
   loadSession: (session: Session) => {
     set({ 
       session,
       undoStack: [],
-      redoStack: []
+      redoStack: [],
+      activeAxisBoardId: session.axesBoards && session.axesBoards.length > 0 ? session.axesBoards[0].id : null
     });
     
     saveSession(session);
-    saveAppState({ language: get().language });
+    saveAppState({ language: get().language, activeAxisBoardId: get().activeAxisBoardId });
   },
 
   updateSessionName: (name: string) => {
@@ -75,6 +92,180 @@ export const useDeckStore = create<DeckStore>((set, get) => ({
       updatedAt: new Date()
     };
     
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+    get().saveToHistory();
+  },
+
+  // Axis boards
+  createAxisBoard: (name?: string, labels: Partial<AxisLabels> = {}) => {
+    const { session } = get();
+    if (!session) return;
+    const nextIndex = (session.axesBoards?.length || 0) + 1;
+    const resolvedName = (name && name.trim()) ? name : `Map ${nextIndex}`;
+    const board: AxisBoard = {
+      id: nanoid(),
+      name: resolvedName,
+      labels: {
+        top: labels.top ?? 'Top',
+        bottom: labels.bottom ?? 'Bottom',
+        left: labels.left ?? 'Left',
+        right: labels.right ?? 'Right',
+      },
+      // If there are existing boards, copy their unique items (ids/labels) to keep shared words
+      items: (session.axesBoards && session.axesBoards.length > 0)
+        ? session.axesBoards[0].items.map(it => ({ id: it.id, label: it.label, x: 50, y: 50 }))
+        : [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const updatedSession: Session = {
+      ...session,
+      axesBoards: [...(session.axesBoards ?? []), board],
+      updatedAt: new Date(),
+    };
+    set({ session: updatedSession, activeAxisBoardId: board.id });
+    saveSession(updatedSession);
+    saveAppState({ activeAxisBoardId: board.id });
+    get().saveToHistory();
+  },
+
+  setActiveAxisBoard: (boardId: string | null) => {
+    set({ activeAxisBoardId: boardId });
+    saveAppState({ activeAxisBoardId: boardId });
+  },
+
+  updateAxisLabels: (boardId: string, labels: Partial<AxisLabels>) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const boards = session.axesBoards.map(b => b.id === boardId ? {
+      ...b,
+      labels: { ...b.labels, ...labels },
+      updatedAt: new Date(),
+    } : b);
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+    get().saveToHistory();
+  },
+
+  updateAxisBoardName: (boardId: string, name: string) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const boards = session.axesBoards.map(b => b.id === boardId ? { ...b, name: trimmed, updatedAt: new Date() } : b);
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+    get().saveToHistory();
+  },
+
+  deleteAxisBoard: (boardId: string) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const boards = session.axesBoards.filter(b => b.id !== boardId);
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+    get().saveToHistory();
+  },
+
+  addAxisItem: (boardId: string, label: string, x: number, y: number) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const item: AxisItem = { id: nanoid(), label, x, y };
+    const boards = session.axesBoards.map(b => b.id === boardId ? {
+      ...b,
+      items: [...b.items, item],
+      updatedAt: new Date(),
+    } : b);
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+    get().saveToHistory();
+  },
+
+  moveAxisItem: (boardId: string, itemId: string, x: number, y: number) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const boards = session.axesBoards.map(b => b.id === boardId ? {
+      ...b,
+      items: b.items.map(it => it.id === itemId ? { ...it, x, y } : it),
+      updatedAt: new Date(),
+    } : b);
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+  },
+
+  updateAxisItemLabel: (boardId: string, itemId: string, label: string) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const boards = session.axesBoards.map(b => b.id === boardId ? {
+      ...b,
+      items: b.items.map(it => it.id === itemId ? { ...it, label } : it),
+      updatedAt: new Date(),
+    } : b);
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+    get().saveToHistory();
+  },
+
+  deleteAxisItem: (boardId: string, itemId: string) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const boards = session.axesBoards.map(b => b.id === boardId ? {
+      ...b,
+      items: b.items.filter(it => it.id !== itemId),
+      updatedAt: new Date(),
+    } : b);
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+    get().saveToHistory();
+  },
+
+  // Shared word actions across all boards
+  addAxisWordAllBoards: (label: string) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const sharedId = nanoid();
+    const boards = session.axesBoards.map(b => ({
+      ...b,
+      items: [...b.items, { id: sharedId, label, x: 50, y: 50 }],
+      updatedAt: new Date(),
+    }));
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+    get().saveToHistory();
+  },
+
+  updateAxisWordLabelAllBoards: (itemId: string, label: string) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const boards = session.axesBoards.map(b => ({
+      ...b,
+      items: b.items.map(it => it.id === itemId ? { ...it, label } : it),
+      updatedAt: new Date(),
+    }));
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
+    set({ session: updatedSession });
+    saveSession(updatedSession);
+    get().saveToHistory();
+  },
+
+  deleteAxisWordAllBoards: (itemId: string) => {
+    const { session } = get();
+    if (!session || !session.axesBoards) return;
+    const boards = session.axesBoards.map(b => ({
+      ...b,
+      items: b.items.filter(it => it.id !== itemId),
+      updatedAt: new Date(),
+    }));
+    const updatedSession = { ...session, axesBoards: boards, updatedAt: new Date() };
     set({ session: updatedSession });
     saveSession(updatedSession);
     get().saveToHistory();
