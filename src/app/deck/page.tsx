@@ -183,6 +183,25 @@ export default function DeckPage() {
                 pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, Math.min(imgHeight, pageHeight - 40));
                 const name = (useDeckStore.getState().session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
                 pdf.save(`${name}_deck_results.pdf`);
+
+                // Also export CSV of the results
+                const rows: string[] = [];
+                const esc = (s: string) => `"${s.replace(/"/g, '""')}"`;
+                rows.push(['Pile','EN','IT'].join(','));
+                const addPile = (pileName: string, cardsArr: CardType[]) => {
+                  cardsArr.forEach(c => rows.push([pileName, c.text_en || '', c.text_it || ''].map(esc).join(',')));
+                };
+                addPile('You Are', youAreCards);
+                addPile('You Are Not', youAreNotCards);
+                addPile('Indecisive', indecisiveCards);
+                addPile("Doesn't Apply", doesNotApplyCards);
+                const csvBlob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+                const csvUrl = URL.createObjectURL(csvBlob);
+                const a = document.createElement('a');
+                a.href = csvUrl;
+                a.download = `${name}_deck_results.csv`;
+                a.click();
+                URL.revokeObjectURL(csvUrl);
               }}
             >
               Export PDF
