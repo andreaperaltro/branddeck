@@ -36,7 +36,7 @@ export default function SettingsPage() {
   const downloadJson = async () => {
     setIsSaving(true);
     try {
-      const dataToSave = pairs.map(({ id, ...rest }) => rest);
+      const dataToSave = pairs.map(({ ENG, ITA, ENG__1, ITA__1 }) => ({ ENG, ITA, ENG__1, ITA__1 }));
       const blob = new Blob([JSON.stringify(dataToSave, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');

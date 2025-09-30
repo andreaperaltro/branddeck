@@ -23,7 +23,14 @@ export const loadSession = (): Session | null => {
     session.createdAt = new Date(session.createdAt);
     session.updatedAt = new Date(session.updatedAt);
     if (session.axesBoards && Array.isArray(session.axesBoards)) {
-      session.axesBoards = (session.axesBoards as any[]).map((b) => ({
+      session.axesBoards = (session.axesBoards as Array<{
+        id: string;
+        name: string;
+        labels: AxisBoard['labels'];
+        items: AxisBoard['items'];
+        createdAt: string | Date;
+        updatedAt: string | Date;
+      }>).map((b) => ({
         ...b,
         createdAt: new Date(b.createdAt),
         updatedAt: new Date(b.updatedAt),
@@ -84,7 +91,14 @@ export const importSession = (jsonString: string): Session | null => {
     session.createdAt = new Date(session.createdAt);
     session.updatedAt = new Date(session.updatedAt);
     if (session.axesBoards && Array.isArray(session.axesBoards)) {
-      session.axesBoards = session.axesBoards.map((b: any) => ({
+      session.axesBoards = session.axesBoards.map((b: {
+        id: string;
+        name: string;
+        labels: AxisBoard['labels'];
+        items: AxisBoard['items'];
+        createdAt: string | Date;
+        updatedAt: string | Date;
+      }) => ({
         ...b,
         createdAt: new Date(b.createdAt),
         updatedAt: new Date(b.updatedAt),

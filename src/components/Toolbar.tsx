@@ -13,16 +13,12 @@ export const Toolbar: React.FC<ToolbarProps> = () => {
     session,
     language,
     setLanguage,
-    undo,
-    redo,
-    undoStack,
-    redoStack,
-    resetSession
+    // unused actions pulled from store are removed to satisfy lint
   } = useDeckStore();
 
   const [sessionName, setSessionName] = useState(session?.name || '');
   const [isEditingName, setIsEditingName] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  // settings moved to dedicated page
 
   const handleNameSave = () => {
     if (sessionName.trim() && sessionName !== session?.name) {
