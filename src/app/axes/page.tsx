@@ -58,7 +58,7 @@ export default function AxesPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="min-w-full">
-        <Toolbar onImportExport={() => {}} />
+        <Toolbar />
         <div className="max-w-6xl mx-auto p-6">
 
         <div className="mb-4 flex items-center gap-2">

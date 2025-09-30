@@ -36,7 +36,7 @@ export default function SettingsPage() {
   const downloadJson = async () => {
     setIsSaving(true);
     try {
-      const dataToSave = pairs.map(({ id: _id, ...rest }) => rest);
+      const dataToSave = pairs.map(({ id, ...rest }) => rest);
       const blob = new Blob([JSON.stringify(dataToSave, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -110,7 +110,7 @@ export default function SettingsPage() {
                   </div>
                 ))}
                 {pairs.length === 0 && (
-                  <div className="bg-white rounded border p-6 text-center text-gray-600">No pairs. Click "Add Pair" to start.</div>
+                  <div className="bg-white rounded border p-6 text-center text-gray-600">No pairs. Click &quot;Add Pair&quot; to start.</div>
                 )}
               </div>
             )}

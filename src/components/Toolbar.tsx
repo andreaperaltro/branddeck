@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { useDeckStore } from '@/store/useDeckStore';
 
 interface ToolbarProps {
-  onImportExport: () => void;
+  onImportExport?: () => void;
 }
 
-export const Toolbar: React.FC<ToolbarProps> = ({ onImportExport }) => {
+export const Toolbar: React.FC<ToolbarProps> = () => {
   const {
     session,
     language,
