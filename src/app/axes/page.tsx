@@ -62,49 +62,6 @@ export default function AxesPage() {
 
         <div className="mb-4 flex items-center gap-2">
           <button
-            type="button"
-            className="px-3 py-2 border rounded"
-            onClick={async () => {
-              try {
-                const { default: html2canvas } = await import('html2canvas');
-                const nameBase = (session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
-                for (let i = 0; i < boards.length; i++) {
-                  const board = boards[i];
-                  const el = boardRefs.current[board.id];
-                  if (!el) continue;
-                  const canvas = await html2canvas(el, { backgroundColor: '#ffffff', scale: 2 });
-                  const blob: Blob | null = await new Promise(resolve => canvas.toBlob(b => resolve(b), 'image/jpeg', 0.92));
-                  if (blob) {
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    const mapName = board.name?.trim() ? board.name.trim().replace(/[^a-z0-9-_]+/gi, '_') : `Map_${i + 1}`;
-                    link.download = `${nameBase}_${mapName}.jpg`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    setTimeout(() => URL.revokeObjectURL(url), 1000);
-                  } else {
-                    // Fallback to data URL if toBlob is unavailable
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-                    const link = document.createElement('a');
-                    link.href = dataUrl;
-                    const mapName = board.name?.trim() ? board.name.trim().replace(/[^a-z0-9-_]+/gi, '_') : `Map_${i + 1}`;
-                    link.download = `${nameBase}_${mapName}.jpg`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  }
-                }
-              } catch (err) {
-                console.error('Failed to export Axes JPGs', err);
-                alert('Failed to export JPGs. Please try again.');
-              }
-            }}
-          >
-            Export JPGs
-          </button>
-          <button
             className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700"
             onClick={() => createAxisBoard('Positioning Map')}
           >
