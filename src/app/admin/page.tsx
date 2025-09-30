@@ -66,8 +66,8 @@ export default function AdminPage() {
   const saveToFile = async () => {
     setIsSaving(true);
     try {
-      // Remove IDs before saving
-      const dataToSave = pairs.map(({ id: _id, ...pair }) => pair);
+      // Remove IDs before saving by explicitly picking fields
+      const dataToSave = pairs.map(({ ENG, ITA, ENG__1, ITA__1 }) => ({ ENG, ITA, ENG__1, ITA__1 }));
       
       // Create a downloadable JSON file
       const dataStr = JSON.stringify(dataToSave, null, 2);
