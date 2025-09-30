@@ -167,41 +167,55 @@ export default function DeckPage() {
             <button
               className="px-3 py-2 border rounded"
               onClick={async () => {
-                const { default: html2canvas } = await import('html2canvas');
-                const jsPDFModule = await import('jspdf');
-                const JsPDFCtor = (jsPDFModule as { jsPDF: typeof jsPDF } | { default: typeof jsPDF });
-                const Ctor = 'jsPDF' in JsPDFCtor ? JsPDFCtor.jsPDF : JsPDFCtor.default;
-                const pdf = new Ctor({ unit: 'pt', format: 'a4' });
-                const el = resultsRef.current;
-                if (!el) return;
-                const canvas = await html2canvas(el, { backgroundColor: '#ffffff', scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                const imgWidth = pageWidth - 40;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, Math.min(imgHeight, pageHeight - 40));
-                const name = (useDeckStore.getState().session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
-                pdf.save(`${name}_deck_results.pdf`);
+                try {
+                  const { default: html2canvas } = await import('html2canvas');
+                  const { jsPDF } = await import('jspdf');
+                  const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+                  const el = resultsRef.current;
+                  if (!el) return;
+                  const canvas = await html2canvas(el, { backgroundColor: '#ffffff', scale: 2 });
+                  const imgData = canvas.toDataURL('image/png');
+                  const pageWidth = pdf.internal.pageSize.getWidth();
+                  const pageHeight = pdf.internal.pageSize.getHeight();
+                  const imgWidth = pageWidth - 40;
+                  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                  pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, Math.min(imgHeight, pageHeight - 40));
+                  const name = (useDeckStore.getState().session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
+                  // Robust save: use blob URL to avoid popup blockers
+                  const blob = pdf.output('blob');
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = `${name}_deck_results.pdf`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-                // Also export CSV of the results
-                const rows: string[] = [];
-                const esc = (s: string) => `"${s.replace(/"/g, '""')}"`;
-                rows.push(['Pile','EN','IT'].join(','));
-                const addPile = (pileName: string, cardsArr: CardType[]) => {
-                  cardsArr.forEach(c => rows.push([pileName, c.text_en || '', c.text_it || ''].map(esc).join(',')));
-                };
-                addPile('You Are', youAreCards);
-                addPile('You Are Not', youAreNotCards);
-                addPile('Indecisive', indecisiveCards);
-                addPile("Doesn't Apply", doesNotApplyCards);
-                const csvBlob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-                const csvUrl = URL.createObjectURL(csvBlob);
-                const a = document.createElement('a');
-                a.href = csvUrl;
-                a.download = `${name}_deck_results.csv`;
-                a.click();
-                URL.revokeObjectURL(csvUrl);
+                  // Also export CSV of the results
+                  const rows: string[] = [];
+                  const esc = (s: string) => `"${s.replace(/"/g, '""')}"`;
+                  rows.push(['Pile','EN','IT'].join(','));
+                  const addPile = (pileName: string, cardsArr: CardType[]) => {
+                    cardsArr.forEach(c => rows.push([pileName, c.text_en || '', c.text_it || ''].map(esc).join(',')));
+                  };
+                  addPile('You Are', youAreCards);
+                  addPile('You Are Not', youAreNotCards);
+                  addPile('Indecisive', indecisiveCards);
+                  addPile("Doesn't Apply", doesNotApplyCards);
+                  const csvBlob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+                  const csvUrl = URL.createObjectURL(csvBlob);
+                  const a = document.createElement('a');
+                  a.href = csvUrl;
+                  a.download = `${name}_deck_results.csv`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  setTimeout(() => URL.revokeObjectURL(csvUrl), 1000);
+                } catch (err) {
+                  console.error('Export failed', err);
+                  alert('Export failed. Please try again.');
+                }
               }}
             >
               Export PDF

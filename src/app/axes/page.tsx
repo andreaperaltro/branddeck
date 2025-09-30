@@ -69,9 +69,8 @@ export default function AxesPage() {
               try {
                 const { default: html2canvas } = await import('html2canvas');
                 const jsPDFModule = await import('jspdf');
-                const JsPDFCtor = (jsPDFModule as { jsPDF: typeof jsPDF } | { default: typeof jsPDF });
-                const Ctor = 'jsPDF' in JsPDFCtor ? JsPDFCtor.jsPDF : JsPDFCtor.default;
-                const pdf = new Ctor({ unit: 'pt', format: 'a4' });
+                const { jsPDF } = jsPDFModule as { jsPDF: typeof jsPDF };
+                const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -90,7 +89,15 @@ export default function AxesPage() {
                 }
                 // Always save a file even if no boards captured
                 const name = (session?.name || 'session').replace(/[^a-z0-9-_]+/gi, '_');
-                pdf.save(`${name}_axes.pdf`);
+                const blob = pdf.output('blob');
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${name}_axes.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
               } catch (err) {
                 console.error('Failed to export Axes PDF', err);
                 alert('Failed to export PDF. Please try again.');
