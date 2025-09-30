@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import type { jsPDF as JsPDFClass } from 'jspdf';
 import { useDeckStore } from '@/store/useDeckStore';
 import { Toolbar } from '@/components/Toolbar';
 
@@ -68,7 +69,7 @@ export default function AxesPage() {
               try {
                 const { default: html2canvas } = await import('html2canvas');
                 const jsPDFLib = await import('jspdf');
-                const PdfCtor = (jsPDFLib as any).jsPDF || (jsPDFLib as any).default;
+                const PdfCtor = (jsPDFLib as { jsPDF: JsPDFClass }).jsPDF ?? (jsPDFLib as { default: JsPDFClass }).default;
                 const pdf = new PdfCtor({ unit: 'pt', format: 'a4' });
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();

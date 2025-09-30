@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import type { jsPDF as JsPDFClass } from 'jspdf';
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCenter } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useDeckStore } from '@/store/useDeckStore';
@@ -169,7 +170,7 @@ export default function DeckPage() {
                 try {
                   const { default: html2canvas } = await import('html2canvas');
                   const jsPDFLib = await import('jspdf');
-                  const PdfCtor = (jsPDFLib as any).jsPDF || (jsPDFLib as any).default;
+                  const PdfCtor = (jsPDFLib as { jsPDF: JsPDFClass }).jsPDF ?? (jsPDFLib as { default: JsPDFClass }).default;
                   const pdf = new PdfCtor({ unit: 'pt', format: 'a4' });
                   const el = resultsRef.current;
                   if (!el) return;
