@@ -66,11 +66,7 @@ export default function AxesPage() {
             className="px-3 py-2 border rounded"
             onClick={async () => {
               // lazy import to keep initial bundle smaller
-              const html2canvas = await (async () => {
-                try { return (await import('html2canvas')).default; } catch { /* fallthrough */ }
-                try { return (await import('html2canvas/dist/html2canvas.js')).default; } catch { /* fallthrough */ }
-                throw new Error('html2canvas not available');
-              })();
+              const { default: html2canvas } = await import('html2canvas');
               const jsPDFModule = await (async () => {
                 try { return await import('jspdf'); } catch { /* fallthrough */ }
                 try { return await import('jspdf/dist/jspdf.umd.min.js'); } catch { /* fallthrough */ }
